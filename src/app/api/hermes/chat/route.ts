@@ -78,24 +78,31 @@ export async function POST(request: NextRequest) {
       content: msg.content,
     }))
 
-    // Call AI
+    // Call AI via Mastra Agent
     let assistantContent = ''
 
     try {
-      const zai = await ZAI.create()
-      const completion = await zai.chat.completions.create({
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...conversationHistory,
-          { role: 'user', content: message },
-        ],
-        thinking: { type: 'disabled' },
+      const { getHermesAgent } = await import('@/lib/hermes/agent')
+      const agent = await getHermesAgent()
+
+      // Convert conversation history to Mastra format (CoreMessage / ChatMessage)
+      const mastraMessages = [
+        { role: 'system' as const, content: SYSTEM_PROMPT },
+        ...conversationHistory.map((msg) => ({
+          role: msg.role as 'user' | 'assistant' | 'system',
+          content: msg.content,
+        })),
+        { role: 'user' as const, content: message },
+      ]
+
+      const result = await agent.generate(mastraMessages, {
+        threadId: conversation.id,
       })
 
       assistantContent =
-        completion.choices?.[0]?.message?.content || 'I apologize, but I was unable to generate a response. Please try again.'
+        result.text || 'I apologize, but I was unable to generate a response. Please try again.'
     } catch (aiError) {
-      console.error('AI completion error:', aiError)
+      console.error('Mastra AI agent error, falling back to mock response:', aiError)
       assistantContent = generateFallbackResponse(message)
     }
 

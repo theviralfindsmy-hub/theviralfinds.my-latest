@@ -1,7 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useConfetti } from '@/hooks/use-confetti'
+import { toast } from 'sonner'
 import {
   Trophy,
   Crown,
@@ -351,6 +353,19 @@ export function LeaderboardPage() {
   const [niche, setNiche] = useState<Niche | 'all'>('all')
   const [page, setPage] = useState(0)
 
+  const [sharingStreak, setSharingStreak] = useState(5)
+  const [hasSharedToday, setHasSharedToday] = useState(false)
+  const { fire } = useConfetti()
+
+  const handleShareAction = () => {
+    setSharingStreak((prev) => prev + 1)
+    setHasSharedToday(true)
+    fire({ variant: 'success' })
+    toast.success('Syabas! Streak kongsi harian anda bertambah! 🚀', {
+      description: 'Teruskan berkongsi untuk membuka ganjaran RM 20.',
+    })
+  }
+
   const allEntries = leaderboardData[period]
 
   const filtered = useMemo(() => {
@@ -360,6 +375,12 @@ export function LeaderboardPage() {
 
   const top3 = filtered.slice(0, 3)
   const yourEntry = filtered.find((e) => e.isYou) ?? allEntries.find((e) => e.isYou)
+
+  useEffect(() => {
+    if (yourEntry) {
+      setSharingStreak(yourEntry.streakDays)
+    }
+  }, [yourEntry])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages - 1)
@@ -393,6 +414,41 @@ export function LeaderboardPage() {
         <LiveEarningsTicker />
       </motion.div>
 
+      {/* Daily Streak Tracker & Action Panel */}
+      <motion.div {...fadeIn} className="transition-all duration-300">
+        <Card variant="brutalist" className="bg-[#ccff00]/10 border-black dark:border-white transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <CardContent className="p-4 sm:p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-[#ccff00] text-black border-2 border-black rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <Flame className={cn("size-6 text-rose-500", sharingStreak >= 7 && "animate-bounce")} />
+              </div>
+              <div>
+                <h3 className="font-black text-sm uppercase tracking-wider text-black dark:text-white">Daily Sharing Streak</h3>
+                <p className="text-xs text-muted-foreground">Kongsi pautan affiliate anda hari ini untuk kekalkan streak!</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+              <div className="text-right">
+                <span className="text-2xl font-black text-black dark:text-white">{sharingStreak} Hari</span>
+                <p className="text-[10px] text-muted-foreground">Misi seterusnya: 7 Hari (RM 20 Bonus)</p>
+              </div>
+              <Button 
+                onClick={handleShareAction}
+                disabled={hasSharedToday}
+                className={cn(
+                  "h-10 text-xs px-4 font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-300",
+                  hasSharedToday 
+                    ? "bg-zinc-300 text-zinc-500 border-zinc-400 shadow-none cursor-not-allowed pointer-events-none" 
+                    : "bg-[#0033ff] text-[#ccff00] hover:bg-[#ccff00] hover:text-black hover:border-black"
+                )}
+              >
+                {hasSharedToday ? "Telah Dikongsi" : "Kongsi Pautan (+1 Hari)"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Filters */}
       <motion.div {...fadeIn} className="space-y-3">
         {/* Period tabs */}
@@ -413,10 +469,10 @@ export function LeaderboardPage() {
             <Button
               key={n.id}
               size="sm"
-              variant={niche === n.id ? 'default' : 'outline'}
+              variant={niche === n.id ? 'brutalist' : 'outline'}
               className={cn(
-                'h-7 px-2.5 text-xs',
-                niche === n.id && 'bg-shopee hover:bg-shopee-dark text-white',
+                'h-7 px-2.5 text-xs transition-all duration-300',
+                niche === n.id && 'border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-white dark:text-black',
               )}
               onClick={() => { setNiche(n.id); setPage(0) }}
             >
@@ -429,7 +485,7 @@ export function LeaderboardPage() {
       {/* Your Rank card */}
       {yourEntry && (
         <motion.div {...fadeIn}>
-          <Card className="border-shopee/30 bg-gradient-to-r from-shopee/10 via-shopee/5 to-transparent card-hover">
+          <Card variant="brutalist" className="border-shopee bg-shopee/5 relative overflow-hidden transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:gap-6">
               <div className="flex items-center gap-3">
                 <div className="flex size-12 items-center justify-center rounded-full bg-shopee/15">
@@ -479,9 +535,9 @@ export function LeaderboardPage() {
       {/* Podium - Top 3 */}
       {top3.length === 3 && (
         <motion.div {...fadeIn}>
-          <Card className="overflow-hidden card-hover">
+          <Card variant="brutalist" className="overflow-hidden transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-black dark:border-white">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-base">
+              <CardTitle className="flex items-center gap-2 text-base font-black uppercase tracking-wider">
                 <Crown className="size-4 text-amber-500" />
                 Top 3 {periodMeta[period].label}
               </CardTitle>
@@ -506,7 +562,7 @@ export function LeaderboardPage() {
 
       {/* Full Leaderboard Table */}
       <motion.div {...fadeIn}>
-        <Card className="card-hover">
+        <Card variant="brutalist" className="transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-black dark:border-white">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <div>
               <CardTitle className="flex items-center gap-2 text-base">
@@ -569,11 +625,11 @@ export function LeaderboardPage() {
                     <Button
                       key={i}
                       size="icon"
-                      variant={i === currentPage ? 'default' : 'outline'}
+                      variant={i === currentPage ? 'brutalist' : 'outline'}
                       onClick={() => setPage(i)}
                       className={cn(
-                        'size-8 text-xs',
-                        i === currentPage && 'bg-shopee hover:bg-shopee-dark text-white',
+                        'size-8 text-xs transition-all duration-300',
+                        i === currentPage && 'border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-white dark:text-black',
                       )}
                       aria-label={`Go to page ${i + 1}`}
                       aria-current={i === currentPage ? 'page' : undefined}

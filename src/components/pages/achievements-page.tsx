@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useConfetti } from '@/hooks/use-confetti'
+import { toast } from 'sonner'
 import {
   Trophy,
   MousePointerClick,
@@ -224,16 +226,50 @@ export function AchievementsPage() {
   const [activeTab, setActiveTab] = useState<string>('all')
   const [examplesOpen, setExamplesOpen] = useState(false)
 
-  const earnedCount = achievements.filter((a) => a.earned).length
-  const totalCount = achievements.length
+  const [userAchievements, setUserAchievements] = useState<Achievement[]>(achievements)
+  const [animatingId, setAnimatingId] = useState<string | null>(null)
+  const { fire } = useConfetti()
+
+  const handleUnlock = (id: string) => {
+    const ach = userAchievements.find((a) => a.id === id)
+    if (!ach) return
+
+    setAnimatingId(id)
+    fire({ variant: 'milestone' })
+    toast.success('Pencapaian Baru Dibuka! 🎉', {
+      description: `Tahniah! Anda telah membuka pencapaian "${ach.title}" dan menerima RM 10 kredit bonus!`,
+    })
+
+    setTimeout(() => {
+      setUserAchievements((prev) =>
+        prev.map((a) =>
+          a.id === id
+            ? {
+                ...a,
+                earned: true,
+                earnedDate: new Date().toISOString().split('T')[0],
+                progress: a.maxProgress,
+              }
+            : a
+        )
+      )
+    }, 600)
+
+    setTimeout(() => {
+      setAnimatingId(null)
+    }, 1200)
+  }
+
+  const earnedCount = userAchievements.filter((a) => a.earned).length
+  const totalCount = userAchievements.length
 
   const filteredAchievements =
     activeTab === 'all'
-      ? achievements
-      : achievements.filter((a) => a.category === activeTab)
+      ? userAchievements
+      : userAchievements.filter((a) => a.category === activeTab)
 
   // Pick the "next achievement to unlock" — locked one with the highest progress %.
-  const lockedAchievements = achievements.filter((a) => !a.earned && a.maxProgress)
+  const lockedAchievements = userAchievements.filter((a) => !a.earned && a.maxProgress)
   const nextAchievement = lockedAchievements
     .map((a) => ({
       achievement: a,
@@ -271,30 +307,30 @@ export function AchievementsPage() {
 
       {/* Overall Progress */}
       <motion.div {...fadeIn}>
-        <Card className="card-hover">
+        <Card variant="brutalist" className="transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-black dark:border-white">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
-                <div className="bg-shopee/10 flex size-14 items-center justify-center rounded-full">
+                <div className="bg-shopee/10 flex size-14 items-center justify-center rounded-none border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                   <Trophy className="text-shopee size-7" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold">
+                  <h2 className="text-lg font-black uppercase tracking-wider">
                     {earnedCount} / {totalCount} Achievements
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Keep going! You&apos;re earning achievements fast.
+                    Teruskan usaha! Anda memburu pencapaian dengan pantas.
                   </p>
                 </div>
               </div>
               <div className="w-full sm:w-48">
                 <div className="mb-1 flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Overall Progress</span>
-                  <span className="font-medium text-shopee">
+                  <span className="text-muted-foreground font-medium">Overall Progress</span>
+                  <span className="font-black text-shopee">
                     {Math.round((earnedCount / totalCount) * 100)}%
                   </span>
                 </div>
-                <Progress value={(earnedCount / totalCount) * 100} className="h-3" />
+                <Progress value={(earnedCount / totalCount) * 100} className="h-3 border border-black rounded-none [&>div]:bg-[#0033ff]" />
               </div>
             </div>
           </CardContent>
@@ -364,7 +400,7 @@ export function AchievementsPage() {
                       value={
                         (nextAchievement.progress! / nextAchievement.maxProgress!) * 100
                       }
-                      className="h-2"
+                      className="h-2 border border-black rounded-none [&>div]:bg-[#0033ff]"
                     />
                     <p className="text-[11px] text-muted-foreground">
                       <Target className="inline size-3 mr-1 -translate-y-0.5" />
@@ -404,78 +440,108 @@ export function AchievementsPage() {
                 const progressPct = achievement.maxProgress
                   ? Math.round((achievement.progress! / achievement.maxProgress) * 100)
                   : 0
+                const isCurrentlyAnimating = animatingId === achievement.id
 
                 return (
                   <motion.div
                     key={achievement.id}
                     variants={fadeIn}
                     id={`achievement-${achievement.id}`}
-                    className="transition-shadow duration-300"
+                    animate={
+                      isCurrentlyAnimating
+                        ? {
+                            y: [0, -10, 2, -4, 0],
+                            scale: [1, 1.02, 0.98, 1],
+                          }
+                        : {}
+                    }
+                    transition={{ duration: 0.8 }}
                   >
                     <Card
+                      variant="brutalist"
                       className={cn(
-                        'card-hover relative overflow-hidden',
+                        'relative overflow-hidden transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-black dark:border-white',
                         achievement.earned
-                          ? 'border-shopee/20'
-                          : 'opacity-70 grayscale-[30%]'
+                          ? 'bg-[#ccff00]/5 border-[#0033ff]'
+                          : 'bg-zinc-100/60 dark:bg-zinc-800/40 opacity-80'
                       )}
                     >
                       {achievement.earned && (
-                        <div className="bg-shopee/5 absolute inset-0 pointer-events-none" />
+                        <div className="bg-[#ccff00]/5 absolute inset-0 pointer-events-none" />
                       )}
-                      <CardContent className="relative p-4">
+                      <CardContent className="relative p-4 flex flex-col h-[180px] justify-between">
                         <div className="flex items-start gap-3">
-                          <div
+                          <motion.div
                             className={cn(
-                              'flex size-11 shrink-0 items-center justify-center rounded-xl',
+                              'flex size-11 shrink-0 items-center justify-center rounded-none border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]',
                               achievement.earned
-                                ? 'bg-shopee/10 text-shopee'
-                                : 'bg-muted text-muted-foreground'
+                                ? 'bg-[#ccff00] text-black'
+                                : 'bg-zinc-300 text-zinc-600'
                             )}
+                            animate={
+                              isCurrentlyAnimating
+                                ? {
+                                    scale: [1, 1.4, 0.8, 1.2, 1],
+                                    rotate: [0, 360, 360, 360, 360],
+                                  }
+                                : {}
+                            }
+                            transition={{ duration: 0.8, ease: 'easeInOut' }}
                           >
-                            {achievement.earned ? (
+                            {achievement.earned || isCurrentlyAnimating ? (
                               <achievement.icon className="size-5" />
                             ) : (
                               <Lock className="size-5" />
                             )}
-                          </div>
+                          </motion.div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                              <h3 className="text-sm font-semibold leading-tight">
+                              <h3 className="text-sm font-black uppercase tracking-wider leading-tight truncate">
                                 {achievement.title}
                               </h3>
                               {achievement.earned && (
-                                <Star className="size-3.5 fill-shopee text-shopee shrink-0" />
+                                <Star className="size-3.5 fill-[#0033ff] text-[#0033ff] shrink-0" />
                               )}
                             </div>
-                            <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
+                            <p className="mt-1 text-xs text-muted-foreground leading-relaxed line-clamp-2">
                               {achievement.description}
                             </p>
                           </div>
                         </div>
 
-                        {achievement.earned ? (
-                          <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Trophy className="size-3 text-shopee" />
-                            Earned on {achievement.earnedDate}
-                          </div>
-                        ) : achievement.maxProgress ? (
-                          <div className="mt-3 space-y-1.5">
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-muted-foreground">
-                                {achievement.progress!.toLocaleString()} / {achievement.maxProgress.toLocaleString()}
-                              </span>
-                              <span className="font-medium">{progressPct}%</span>
+                        <div>
+                          {achievement.earned ? (
+                            <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground font-semibold">
+                              <Trophy className="size-3 text-[#0033ff]" />
+                              Earned on {achievement.earnedDate}
                             </div>
-                            <Progress value={progressPct} className="h-1.5" />
-                          </div>
-                        ) : null}
+                          ) : achievement.maxProgress ? (
+                            <div className="mt-1 space-y-1.5">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-muted-foreground font-medium">
+                                  {achievement.progress!.toLocaleString()} / {achievement.maxProgress.toLocaleString()}
+                                </span>
+                                <span className="font-black text-black dark:text-white">{progressPct}%</span>
+                              </div>
+                              <Progress value={progressPct} className="h-2 border border-black rounded-none [&>div]:bg-[#0033ff]" />
+                            </div>
+                          ) : null}
 
-                        {/* Category Badge */}
-                        <div className="mt-2">
-                          <Badge variant="outline" className="text-[10px] capitalize">
-                            {categoryConfig[achievement.category].label}
-                          </Badge>
+                          <div className="mt-3 flex items-center justify-between gap-2">
+                            <Badge variant="outline" className="text-[9px] capitalize border-black font-semibold rounded-none bg-white text-black">
+                              {categoryConfig[achievement.category].label}
+                            </Badge>
+                            
+                            {!achievement.earned && (
+                              <Button
+                                size="sm"
+                                onClick={() => handleUnlock(achievement.id)}
+                                className="h-6 px-2 text-[9px] font-black uppercase bg-[#ccff00] text-black border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-200 rounded-none shrink-0"
+                              >
+                                Unlock
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -502,7 +568,7 @@ export function AchievementsPage() {
           </DialogHeader>
 
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {achievements
+            {userAchievements
               .filter((a) => a.earned)
               .slice(0, 6)
               .map((a) => (

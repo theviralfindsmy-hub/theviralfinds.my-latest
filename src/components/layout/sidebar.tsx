@@ -52,6 +52,7 @@ import {
   Command,
   X,
   Keyboard,
+  Sparkles,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -167,6 +168,7 @@ const navSections: NavSection[] = [
       { id: 'achievements', label: 'Achievements', icon: Award },
       { id: 'referrals', label: 'Referrals', icon: Users },
       { id: 'hermes', label: 'Hermes AI Hub', icon: Bot, badge: 'AI', color: 'hermes' },
+      { id: 'showcase', label: '3D Showcase', icon: Sparkles, badge: '3D', color: 'hermes', isNew: true },
       { id: 'notifications', label: 'Notifications', icon: Bell },
       { id: 'settings', label: 'Settings', icon: Settings },
     ],
@@ -830,16 +832,16 @@ export function AppSidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-4 border-b border-border">
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-shopee text-white font-bold text-sm flex-shrink-0">
-          TV
+        <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 bg-primary/10 rounded-lg p-1">
+          <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
         </div>
         {sidebarOpen && (
           <div className="flex flex-col min-w-0">
-            <span className="text-sm font-bold text-foreground truncate">
+            <span className="text-sm font-black tracking-tight text-foreground uppercase truncate">
               TheViralFinds
             </span>
-            <span className="text-[10px] text-muted-foreground">
-              Affiliate Manager Pro
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+              Affiliate Pro
             </span>
           </div>
         )}

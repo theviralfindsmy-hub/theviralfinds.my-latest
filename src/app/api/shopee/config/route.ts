@@ -57,9 +57,10 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { appId, secret, region } = body
+    const { appId, secret, secretKey, region } = body
+    const finalSecret = secret || secretKey
 
-    if (!appId || !secret) {
+    if (!appId || !finalSecret) {
       return NextResponse.json(
         { error: 'App ID and Secret are required' },
         { status: 400 }
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
     // Upsert credentials to AppSetting table
     const settingsToSave = [
       { key: 'shopee_app_id', value: String(appId) },
-      { key: 'shopee_secret', value: String(secret) },
+      { key: 'shopee_secret', value: String(finalSecret) },
       { key: 'shopee_region', value: region || 'my' },
     ]
 
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
     // Test connection after saving
     const service = new ShopeeAffiliateService({
       appId: String(appId),
-      secret: String(secret),
+      secret: String(finalSecret),
       region: region || 'my',
     })
 

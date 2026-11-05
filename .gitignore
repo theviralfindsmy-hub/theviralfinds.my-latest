@@ -30,12 +30,26 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+!.env.example
 
 # vercel
 .vercel
 
+# databases
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+db/*.db
+db/*.db-journal
+
+# review & scratch tools
+tool-results/
+review-screenshots/
+*.bat
+*.vbs
 
 # typescript
 *.tsbuildinfo

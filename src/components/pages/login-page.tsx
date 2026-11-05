@@ -325,7 +325,7 @@ function HeroSection({
   onWatchDemo: () => void
 }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-shopee/5 via-background to-background">
+    <section className="relative overflow-hidden bg-gradient-to-b from-shopee/5 via-background to-background mesh-gradient">
       {/* Decorative background blobs */}
       <div
         aria-hidden
@@ -382,19 +382,19 @@ function HeroSection({
               transition={{ duration: 0.5, delay: 0.25 }}
               className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
             >
-              <Button
+              <Button variant="gradient"
                 size="lg"
                 onClick={onStartFree}
-                className="bg-shopee hover:bg-shopee-dark text-white h-12 px-7 text-base shadow-lg shadow-shopee/20 transition-transform hover:scale-[1.02]"
+                className="h-12 px-7 text-base shadow-lg shadow-shopee/20 transition-transform hover:scale-[1.02]"
               >
                 Start Free
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <Button
                 size="lg"
-                variant="outline"
+                variant="glow"
                 onClick={onWatchDemo}
-                className="h-12 px-7 text-base border-border hover:bg-muted"
+                className="h-12 px-7 text-base border-border bg-background hover:bg-muted text-foreground"
               >
                 <Play className="w-4 h-4 mr-2" />
                 Watch Demo
@@ -435,14 +435,14 @@ function HeroSection({
               transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-auto max-w-md"
             >
-              <Card className="border-border shadow-2xl shadow-shopee/10 overflow-hidden">
+              <Card variant="gradient" className="border-border shadow-2xl shadow-shopee/10 overflow-hidden">
                 {/* Window chrome */}
                 <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-muted/40">
                   <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
                   <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                   <div className="ml-3 flex items-center gap-2 text-xs text-muted-foreground">
-                    <ShoppingBag className="w-3.5 h-3.5 text-shopee" />
+                    <img src="/logo.svg" alt="logo" className="w-3.5 h-3.5 object-contain" />
                     app.theviralfindsmy.com
                   </div>
                 </div>
@@ -655,7 +655,7 @@ function SocialProofBand() {
               transition={{ duration: 0.5, delay: i * 0.12 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="h-full border-border shadow-sm hover:shadow-md transition-shadow">
+              <Card variant="glass" className="h-full border-border shadow-sm hover:shadow-md transition-shadow backdrop-blur-md">
                 <CardContent className="p-6 flex flex-col h-full">
                   <div className="flex items-center justify-between mb-4">
                     <Quote className="w-8 h-8 text-shopee/30" />
@@ -796,7 +796,7 @@ function FeatureMock({
   return (
     <div className="relative">
       <div className={`absolute -inset-4 rounded-3xl ${feature.bg} blur-2xl opacity-50`} aria-hidden />
-      <Card className={`relative border-2 ${feature.border} shadow-xl overflow-hidden`}>
+      <Card variant="glass" className={`relative border ${feature.border} shadow-xl overflow-hidden backdrop-blur-md`}>
         <CardContent className="p-5 sm:p-6">
           {/* Header bar */}
           <div className="flex items-center justify-between mb-4">
@@ -978,7 +978,7 @@ function PricingPreview({ onStartFree }: { onStartFree: () => void }) {
                   </Badge>
                 </div>
               )}
-              <Card className={`h-full ${tier.accent} transition-shadow ${tier.highlight ? 'shadow-lg shadow-shopee/10' : 'shadow-sm'}`}>
+              <Card variant={tier.highlight ? 'gradient' : 'glass'} className={`h-full ${tier.accent} transition-shadow backdrop-blur-md`}>
                 <CardContent className="p-5 sm:p-6 flex flex-col h-full">
                   <h3 className="text-base sm:text-lg font-bold text-foreground">{tier.name}</h3>
                   <p className="mt-1 text-xs text-muted-foreground min-h-[2.5rem]">{tier.desc}</p>
@@ -996,13 +996,9 @@ function PricingPreview({ onStartFree }: { onStartFree: () => void }) {
                     )}
                   </div>
 
-                  <Button
+                  <Button variant={tier.highlight ? 'glow' : 'outline'}
                     onClick={onStartFree}
-                    className={`mt-5 w-full h-10 ${
-                      tier.highlight
-                        ? 'bg-shopee hover:bg-shopee-dark text-white'
-                        : 'bg-secondary text-foreground hover:bg-secondary/80'
-                    }`}
+                    className="mt-5 w-full h-10"
                   >
                     {tier.cta}
                     <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
@@ -1146,12 +1142,12 @@ function AuthSection() {
           {/* Brand badge for mobile + heading */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center gap-2 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-shopee text-white flex items-center justify-center">
-                <ShoppingBag className="w-5 h-5" />
+              <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 bg-primary/10 rounded-xl p-1.5">
+                <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
               </div>
               <div className="text-left">
-                <h2 className="text-base font-bold text-foreground">TheViralFindsMY</h2>
-                <p className="text-[10px] text-muted-foreground">Affiliate Manager Pro</p>
+                <h2 className="text-base font-black tracking-tight text-foreground uppercase">TheViralFinds<span className="text-primary font-normal">MY</span></h2>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Affiliate Pro</p>
               </div>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -1162,7 +1158,7 @@ function AuthSection() {
             </p>
           </div>
 
-          <Card className="border-border shadow-lg" id="auth-form">
+          <Card variant="glass" className="border-border shadow-lg glow-blue backdrop-blur-xl" id="auth-form">
             <CardContent className="p-6 sm:p-8 space-y-5">
               {error && (
                 <div
@@ -1214,13 +1210,13 @@ function AuthSection() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="login-password">Password</Label>
-                    <button
+                    <Button variant="brutalist"
                       type="button"
                       className="text-xs text-shopee hover:underline"
                       onClick={() => toast.info('Password reset is coming soon.')}
                     >
                       Forgot password?
-                    </button>
+                    </Button>
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -1235,7 +1231,7 @@ function AuthSection() {
                       disabled={loading}
                       required
                     />
-                    <button
+                    <Button variant="brutalist"
                       type="button"
                       onClick={() => setShowPassword((s) => !s)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
@@ -1243,11 +1239,11 @@ function AuthSection() {
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
-                <Button
+                <Button variant="glow"
                   type="submit"
                   disabled={loading}
                   className="w-full bg-shopee hover:bg-shopee-dark text-white h-11"
@@ -1273,13 +1269,13 @@ function AuthSection() {
                   <span className="font-mono text-foreground">demo@theviralfindsmy.com</span>{' '}
                   / <span className="font-mono text-foreground">demo123</span>
                 </p>
-                <button
+                <Button variant="brutalist"
                   type="button"
                   onClick={handleDemoFill}
                   className="mt-1 text-shopee hover:underline text-xs font-medium"
                 >
                   Fill demo credentials →
-                </button>
+                </Button>
               </div>
 
               {(hasGoogle || hasFacebook) && (
@@ -1323,13 +1319,13 @@ function AuthSection() {
 
               <div className="text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{' '}
-                <button
+                <Button variant="brutalist"
                   type="button"
                   onClick={() => setAuthView('register')}
                   className="font-semibold text-shopee hover:underline"
                 >
                   Create one now
-                </button>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -1407,13 +1403,13 @@ export function LoginPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-shopee text-white flex items-center justify-center">
-                <ShoppingBag className="w-4 h-4" />
+              <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 bg-primary/10 rounded-lg p-1">
+                <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-foreground">TheViralFindsMY</p>
-                <p className="text-[10px] text-muted-foreground">
-                  Built with ❤️ for Malaysian Shopee Affiliates
+                <p className="text-sm font-black tracking-tight text-foreground uppercase">TheViralFinds<span className="text-primary font-normal">MY</span></p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+                  Built for MY Affiliates
                 </p>
               </div>
             </div>
@@ -1486,3 +1482,4 @@ function FacebookIcon({ className }: { className?: string }) {
     </svg>
   )
 }
+

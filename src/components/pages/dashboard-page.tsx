@@ -379,7 +379,7 @@ function WelcomeBanner() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="card-hover border-shopee/20 bg-gradient-to-r from-shopee/5 via-shopee/10 to-transparent overflow-hidden">
+      <Card variant="gradient" className="border-shopee/20 bg-gradient-to-r from-shopee/5 via-shopee/10 to-transparent overflow-hidden">
         <CardContent className="flex items-center gap-4 py-2">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-shopee/15 animate-float">
             <LayoutDashboard className="h-6 w-6 text-shopee" />
@@ -464,7 +464,7 @@ function SmartInsightsBanner() {
         exit={prefersReduced ? { opacity: 0 } : { opacity: 0, y: -16 }}
         transition={{ duration: 0.45, ease: 'easeOut' }}
       >
-        <Card className="border-hermes/30 bg-gradient-to-r from-hermes/10 via-hermes/5 to-transparent overflow-hidden">
+        <Card variant="glass" className="border-hermes/30 bg-gradient-to-r from-hermes/10 via-hermes/5 to-transparent overflow-hidden backdrop-blur-xl">
           <CardContent className="flex items-start gap-3 py-3 sm:gap-4 sm:py-4">
             {/* HERMES robot icon */}
             <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-hermes/15">
@@ -536,6 +536,12 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
         transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
       }
 
+  const glowClass = stat.textColor.includes('shopee') 
+    ? 'glow-lime' 
+    : stat.textColor.includes('violet') 
+      ? 'glow-purple' 
+      : 'glow-blue'
+
   return (
     <motion.div
       initial={prefersReduced ? { opacity: 0 } : { opacity: 0, y: 20 }}
@@ -543,7 +549,7 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
       transition={{ duration: 0.4, delay: index * 0.08 }}
       {...hoverLift}
     >
-      <Card className="card-hover group relative overflow-hidden transition-colors hover:border-shopee/40">
+      <Card variant="glass" className={cn("card-hover group relative overflow-hidden transition-colors hover:border-shopee/40 border-black/10 dark:border-white/10 shadow-lg", glowClass)}>
         {/* Sparkline in the corner — sits behind the value */}
         <div
           className={cn(
@@ -610,7 +616,7 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
 
 function StatCardSkeleton() {
   return (
-    <Card>
+    <Card variant="glass">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="h-9 w-9 rounded-lg" />
@@ -630,7 +636,7 @@ function EarningsChart() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
     >
-      <Card className="card-hover">
+      <Card variant="glass" className="card-hover glow-purple border-black/10 dark:border-white/10">
         <CardHeader>
           <CardTitle className="text-base">Earnings Overview</CardTitle>
           <CardDescription>Last 30 days performance</CardDescription>
@@ -691,7 +697,7 @@ function ClicksChart() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.5 }}
     >
-      <Card className="card-hover">
+      <Card variant="glass" className="card-hover glow-lime border-black/10 dark:border-white/10">
         <CardHeader>
           <CardTitle className="text-base">Clicks Overview</CardTitle>
           <CardDescription>Last 14 days click data</CardDescription>
@@ -738,7 +744,7 @@ function ClicksChart() {
 
 function ChartSkeleton() {
   return (
-    <Card>
+    <Card variant="glass">
       <CardHeader>
         <Skeleton className="h-5 w-36 mb-1" />
         <Skeleton className="h-4 w-44" />
@@ -757,7 +763,7 @@ function TopProducts() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.6 }}
     >
-      <Card className="card-hover">
+      <Card variant="elevated" className="card-hover border-black/10 dark:border-white/10">
         <CardHeader>
           <CardTitle className="text-base">Top Products</CardTitle>
           <CardDescription>Best performing affiliate products</CardDescription>
@@ -805,7 +811,7 @@ function TopProducts() {
 
 function TopProductsSkeleton() {
   return (
-    <Card>
+    <Card variant="glass">
       <CardHeader>
         <Skeleton className="h-5 w-28 mb-1" />
         <Skeleton className="h-4 w-48" />
@@ -901,7 +907,7 @@ function RecentActivityList({ onSeeAll }: { onSeeAll: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.7 }}
     >
-      <Card className="card-hover">
+      <Card variant="elevated" className="card-hover border-black/10 dark:border-white/10">
         <CardHeader>
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
@@ -962,7 +968,7 @@ function RecentActivityList({ onSeeAll }: { onSeeAll: () => void }) {
 
 function RecentActivitySkeleton() {
   return (
-    <Card>
+    <Card variant="glass">
       <CardHeader>
         <Skeleton className="h-5 w-32 mb-1" />
         <Skeleton className="h-4 w-40" />
@@ -1041,7 +1047,7 @@ function QuickActions() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.8 }}
     >
-      <Card className="card-hover">
+      <Card variant="glass" className="card-hover glow-blue border-black/10 dark:border-white/10">
         <CardHeader>
           <CardTitle className="text-base">Quick Actions</CardTitle>
           <CardDescription>Common tasks at your fingertips</CardDescription>
@@ -1072,7 +1078,7 @@ function QuickActions() {
 
 function QuickActionsSkeleton() {
   return (
-    <Card>
+    <Card variant="glass">
       <CardHeader>
         <Skeleton className="h-5 w-28 mb-1" />
         <Skeleton className="h-4 w-52" />
@@ -1134,7 +1140,7 @@ function PerformanceScore() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.9 }}
     >
-      <Card className="card-hover">
+      <Card variant="glass" className="card-hover glow-pink border-black/10 dark:border-white/10">
         <CardHeader>
           <CardTitle className="text-base">Performance Score</CardTitle>
           <CardDescription>Overall affiliate health</CardDescription>
@@ -1249,7 +1255,7 @@ function PerformanceScore() {
 
 function PerformanceScoreSkeleton() {
   return (
-    <Card>
+    <Card variant="brutalist">
       <CardHeader>
         <Skeleton className="h-5 w-36 mb-1" />
         <Skeleton className="h-4 w-40" />
@@ -1288,7 +1294,7 @@ export function DashboardPage() {
     return (
       <div className="space-y-6 p-4 md:p-6">
         {/* Welcome Banner Skeleton */}
-        <Card className="border-shopee/20">
+        <Card variant="brutalist" className="border-shopee/20">
           <CardContent className="flex items-center gap-4 py-2">
             <Skeleton className="h-12 w-12 rounded-xl animate-float" />
             <div className="flex-1 space-y-2">
@@ -1372,3 +1378,4 @@ export function DashboardPage() {
 }
 
 export default DashboardPage
+

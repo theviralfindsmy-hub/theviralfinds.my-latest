@@ -81,7 +81,7 @@ async function main() {
           width: spec.size,
           height: spec.size,
           channels: 4,
-          background: { r: 238, g: 77, b: 45, alpha: 1 },
+          background: { r: 27, g: 85, b: 255, alpha: 1 },
         },
       })
         .composite([{ input: await inner.png().toBuffer(), gravity: 'center' }])

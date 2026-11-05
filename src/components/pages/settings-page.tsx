@@ -303,7 +303,7 @@ export function SettingsPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Authentication & Account Summary */}
           <motion.div {...fadeIn}>
-            <Card className="card-hover border-shopee/20">
+            <Card variant="brutalist" className="card-hover border-shopee/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ShieldCheck className="size-4 text-shopee" />
@@ -369,7 +369,7 @@ export function SettingsPage() {
                     <div className="text-sm text-muted-foreground">
                       You are not signed in. Sign in to sync your profile.
                     </div>
-                    <Button
+                    <Button variant="brutalist"
                       size="sm"
                       className="bg-shopee hover:bg-shopee-dark text-white gap-2"
                       onClick={() => setAuthView('login')}
@@ -385,7 +385,7 @@ export function SettingsPage() {
 
           {/* Profile Section */}
           <motion.div {...fadeIn}>
-            <Card className="card-hover">
+            <Card variant="brutalist" className="card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <User className="size-4 text-shopee" />
@@ -453,7 +453,7 @@ export function SettingsPage() {
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <Button className="gap-2" onClick={handleSaveProfile} disabled={savingProfile}>
+                  <Button variant="brutalist" className="gap-2" onClick={handleSaveProfile} disabled={savingProfile}>
                     <Save className="size-4" />
                     {savingProfile ? 'Saving...' : 'Save Profile'}
                   </Button>
@@ -464,7 +464,7 @@ export function SettingsPage() {
 
           {/* Notification Preferences */}
           <motion.div {...fadeIn}>
-            <Card className="card-hover">
+            <Card variant="brutalist" className="card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <Bell className="size-4 text-shopee" />
@@ -518,7 +518,7 @@ export function SettingsPage() {
 
           {/* API Connections - Dual Tabs */}
           <motion.div {...fadeIn}>
-            <Card className="card-hover">
+            <Card variant="brutalist" className="card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <Globe className="size-4 text-shopee" />
@@ -744,7 +744,7 @@ export function SettingsPage() {
                           Disconnect
                         </Button>
                       )}
-                      <Button className="gap-2">
+                      <Button variant="brutalist" className="gap-2">
                         <Save className="size-4" />
                         Save Connection
                       </Button>
@@ -827,7 +827,7 @@ export function SettingsPage() {
                         )}
                         {testingConnection ? 'Testing...' : 'Test Connection'}
                       </Button>
-                      <Button className="gap-2">
+                      <Button variant="brutalist" className="gap-2">
                         <Save className="size-4" />
                         Save Connection
                       </Button>
@@ -843,7 +843,7 @@ export function SettingsPage() {
 
           {/* Danger Zone */}
           <motion.div {...fadeIn}>
-            <Card className="border-destructive/20 card-hover">
+            <Card variant="brutalist" className="border-destructive/20 card-hover">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base text-destructive">
                   <Shield className="size-4" />
@@ -927,7 +927,7 @@ export function SettingsPage() {
         {/* Right Sidebar */}
         <motion.div {...fadeIn} className="space-y-6">
           {/* App Info */}
-          <Card className="card-hover">
+          <Card variant="brutalist" className="card-hover">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <Info className="size-4 text-shopee" />
@@ -988,7 +988,7 @@ export function SettingsPage() {
           </Card>
 
           {/* Quick Actions */}
-          <Card className="card-hover">
+          <Card variant="brutalist" className="card-hover">
             <CardHeader>
               <CardTitle className="text-base">Quick Actions</CardTitle>
             </CardHeader>
@@ -1009,7 +1009,7 @@ export function SettingsPage() {
           </Card>
 
           {/* Account Summary */}
-          <Card className="border-shopee/10 bg-shopee/5">
+          <Card variant="brutalist" className="border-shopee/10 bg-shopee/5">
             <CardContent className="p-4 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="bg-shopee/10 flex size-8 items-center justify-center rounded-full">
@@ -1032,3 +1032,4 @@ export function SettingsPage() {
     </div>
   )
 }
+

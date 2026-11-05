@@ -22,6 +22,8 @@ export async function GET() {
         avatarUrl: true,
         shopeeAffId: true,
         isActive: true,
+        onboardingComplete: true,
+        niches: true,
         lastLoginAt: true,
         emailVerified: true,
         createdAt: true,
@@ -57,14 +59,20 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json().catch(() => ({}))
-    const { name, shopeeAffId } = body ?? {}
+    const { name, shopeeAffId, onboardingComplete, niches } = body ?? {}
 
-    const data: { name?: string; shopeeAffId?: string } = {}
+    const data: { name?: string; shopeeAffId?: string; onboardingComplete?: boolean; niches?: string | null } = {}
     if (typeof name === 'string' && name.trim().length > 0) {
       data.name = name.trim().slice(0, 80)
     }
     if (typeof shopeeAffId === 'string') {
       data.shopeeAffId = shopeeAffId.trim().slice(0, 120) || null
+    }
+    if (typeof onboardingComplete === 'boolean') {
+      data.onboardingComplete = onboardingComplete
+    }
+    if (niches !== undefined) {
+      data.niches = niches === null ? null : typeof niches === 'string' ? niches : JSON.stringify(niches)
     }
 
     if (Object.keys(data).length === 0) {
@@ -86,6 +94,8 @@ export async function PATCH(request: NextRequest) {
         avatarUrl: true,
         shopeeAffId: true,
         isActive: true,
+        onboardingComplete: true,
+        niches: true,
         lastLoginAt: true,
         emailVerified: true,
         createdAt: true,

@@ -53,6 +53,7 @@ const LeaderboardPage = lazy(() => import('@/components/pages/leaderboard-page')
 const ReferralsPage = lazy(() => import('@/components/pages/referrals-page').then(m => ({ default: m.ReferralsPage })))
 const NotificationsPage = lazy(() => import('@/components/pages/notifications-page').then(m => ({ default: m.NotificationsPage })))
 const SettingsPage = lazy(() => import('@/components/pages/settings-page').then(m => ({ default: m.SettingsPage })))
+const LandingPage = lazy(() => import('@/components/marketing/landing-page-v2').then(m => ({ default: m.LandingPage })))
 const LoginPage = lazy(() => import('@/components/pages/login-page').then(m => ({ default: m.LoginPage })))
 const RegisterPage = lazy(() => import('@/components/pages/register-page').then(m => ({ default: m.RegisterPage })))
 
@@ -79,6 +80,7 @@ const MarketplacePage = lazy(() => import('@/components/pages/marketplace-page')
 const TeamPage = lazy(() => import('@/components/pages/team-page').then(m => ({ default: m.TeamPage })))
 const WhiteLabelPage = lazy(() => import('@/components/pages/whitelabel-page').then(m => ({ default: m.WhiteLabelPage })))
 const ApiKeysPage = lazy(() => import('@/components/pages/apikeys-page').then(m => ({ default: m.ApiKeysPage })))
+const ShowcasePage = lazy(() => import('@/components/showcase/tvf-3d-isometric-showcase').then(m => ({ default: m.TVF3DIsometricShowcase })))
 
 function PageLoader() {
   return <PageSkeleton />
@@ -124,6 +126,7 @@ const pageComponents: Record<PageId, React.LazyExoticComponent<React.ComponentTy
   team: TeamPage,
   whitelabel: WhiteLabelPage,
   apikeys: ApiKeysPage,
+  showcase: ShowcasePage,
 }
 
 function AuthScreen() {
@@ -139,11 +142,11 @@ function AuthLoader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-shopee text-white flex items-center justify-center">
-          <ShoppingBag className="w-6 h-6" />
+        <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-primary/10 rounded-xl p-2 animate-bounce">
+          <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="w-4 h-4 animate-spin" /> Loading TheViralFindsMY...
+        <div className="flex items-center gap-2 text-sm text-muted-foreground uppercase tracking-wider font-semibold">
+          <Loader2 className="w-4 h-4 animate-spin" /> Loading THEVIRALFINDS...
         </div>
       </div>
     </div>
@@ -151,8 +154,9 @@ function AuthLoader() {
 }
 
 function AppContent() {
-  const { activePage, setActivePage, isAuthenticated, isLoadingAuth, checkAuth } = useAppStore()
+  const { activePage, setActivePage, isAuthenticated, isLoadingAuth, checkAuth, setAuthView } = useAppStore()
   const queryClient = useQueryClient()
+  const [showAuth, setShowAuth] = useState(false)
 
   useEffect(() => {
     checkAuth()
@@ -166,12 +170,41 @@ function AppContent() {
 
   const PageComponent = pageComponents[activePage]
 
-  // Show auth screen (login/register) when not authenticated
+  // Show loading state
   if (isLoadingAuth) {
     return <AuthLoader />
   }
+
+  // Show landing page or auth screen when not authenticated
   if (!isAuthenticated) {
-    return <AuthScreen />
+    if (showAuth) {
+      return (
+        <Suspense fallback={<AuthLoader />}>
+          <AuthScreen />
+          <button
+            onClick={() => setShowAuth(false)}
+            className="fixed top-4 left-4 z-50 px-3 py-1.5 text-xs bg-background/80 backdrop-blur border border-border/60 rounded-lg hover:bg-accent transition-colors"
+          >
+            ← Back to Home
+          </button>
+        </Suspense>
+      )
+    }
+    return (
+      <Suspense fallback={<AuthLoader />}>
+        <LandingPage
+          onStartFree={() => {
+            setAuthView('register')
+            setShowAuth(true)
+          }}
+          onSignIn={() => {
+            setAuthView('login')
+            setShowAuth(true)
+          }}
+          onWatchDemo={() => toast.info('Demo video coming soon! 🎬')}
+        />
+      </Suspense>
+    )
   }
 
   return (
@@ -198,8 +231,8 @@ function AppContent() {
             <div className="px-6 py-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-lg bg-shopee flex items-center justify-center">
-                    <BarChart3 className="w-3.5 h-3.5 text-white" />
+                  <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center">
+                    <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
                   </div>
                   <span className="font-bold text-foreground text-sm">TheViralFindsMY</span>
                 </div>

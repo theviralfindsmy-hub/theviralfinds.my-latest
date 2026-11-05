@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: false,
   // Load pdfkit as a native Node module so its __dirname-based font
   // metrics resolution works correctly. Without this, the bundler

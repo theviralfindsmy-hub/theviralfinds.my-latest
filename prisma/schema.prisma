@@ -74,6 +74,8 @@ model User {
   emailVerified DateTime?
   shopeeAffId   String?
   isActive      Boolean  @default(true)
+  onboardingComplete Boolean @default(false)
+  niches             String?  // JSON string storing chosen niches
   lastLoginAt   DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

@@ -20,11 +20,17 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        brutalist:
+          "bg-[#0033ff] text-[#ccff00] border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-[#ccff00] hover:text-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none font-black uppercase tracking-widest rounded-none",
+        glow:
+          "bg-primary text-primary-foreground shadow-[0_0_15px_oklch(0.52_0.28_264/30%)] hover:shadow-[0_0_25px_oklch(0.52_0.28_264/50%)] transition-shadow duration-300",
+        gradient:
+          "bg-gradient-to-r from-[oklch(0.52_0.28_264)] via-[oklch(0.55_0.18_280)] to-[oklch(0.92_0.27_116)] text-white font-bold hover:opacity-90 transition-opacity",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        sm: "h-8 gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 px-6 has-[>svg]:px-4",
         icon: "size-9",
       },
     },

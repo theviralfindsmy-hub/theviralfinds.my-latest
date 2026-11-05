@@ -103,12 +103,12 @@ export function RegisterPage() {
         </div>
 
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-            <ShoppingBag className="w-6 h-6" />
+          <div className="w-11 h-11 flex items-center justify-center flex-shrink-0 bg-white/10 rounded-xl p-2 backdrop-blur">
+            <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h2 className="text-xl font-bold">TheViralFindsMY</h2>
-            <p className="text-xs text-white/80">Shopee Affiliate Manager Pro</p>
+            <h2 className="text-xl font-black tracking-tight uppercase">TheViralFinds<span className="text-yellow-300 font-normal">MY</span></h2>
+            <p className="text-xs text-white/80 uppercase tracking-wider font-semibold">Affiliate Pro</p>
           </div>
         </div>
 
@@ -158,16 +158,16 @@ export function RegisterPage() {
           className="w-full max-w-md"
         >
           <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div className="w-11 h-11 rounded-xl bg-hermes text-white flex items-center justify-center">
-              <ShoppingBag className="w-6 h-6" />
+            <div className="w-11 h-11 flex items-center justify-center flex-shrink-0 bg-primary/10 rounded-xl p-2">
+              <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">TheViralFindsMY</h2>
-              <p className="text-xs text-muted-foreground">Affiliate Manager Pro</p>
+              <h2 className="text-lg font-black tracking-tight text-foreground uppercase">TheViralFinds<span className="text-primary font-normal">MY</span></h2>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Affiliate Pro</p>
             </div>
           </div>
 
-          <Card className="border-border shadow-lg">
+          <Card variant="brutalist" className="border-border shadow-lg">
             <CardContent className="p-6 sm:p-8 space-y-6">
               <div className="space-y-1">
                 <h2 className="text-2xl font-bold text-foreground">Create Your Account 🚀</h2>
@@ -234,7 +234,7 @@ export function RegisterPage() {
                       disabled={loading}
                       required
                     />
-                    <button
+                    <Button variant="brutalist"
                       type="button"
                       onClick={() => setShowPassword((s) => !s)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
@@ -242,7 +242,7 @@ export function RegisterPage() {
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                    </Button>
                   </div>
                   {password.length > 0 && (
                     <p className={`text-xs ${passwordChecks.length ? 'text-emerald-600' : 'text-amber-600'}`}>
@@ -274,7 +274,7 @@ export function RegisterPage() {
                   )}
                 </div>
 
-                <Button
+                <Button variant="brutalist"
                   type="submit"
                   disabled={loading}
                   className="w-full bg-hermes hover:bg-violet-700 text-white h-11"
@@ -332,13 +332,13 @@ export function RegisterPage() {
 
               <div className="text-center text-sm text-muted-foreground">
                 Already have an account?{' '}
-                <button
+                <Button variant="brutalist"
                   type="button"
                   onClick={() => setAuthView('login')}
                   className="font-semibold text-hermes hover:underline"
                 >
                   Sign in
-                </button>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -347,3 +347,4 @@ export function RegisterPage() {
     </div>
   )
 }
+

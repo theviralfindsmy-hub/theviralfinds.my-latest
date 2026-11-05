@@ -40,6 +40,7 @@ export type PageId =
   | 'team'
   | 'whitelabel'
   | 'apikeys'
+  | 'showcase'
 
 export type AuthView = 'login' | 'register'
 
@@ -52,6 +53,8 @@ export interface AuthUser {
   avatarUrl?: string | null
   shopeeAffId?: string | null
   isActive?: boolean
+  onboardingComplete?: boolean
+  niches?: string | null
   lastLoginAt?: string | null
   emailVerified?: string | null
   createdAt?: string

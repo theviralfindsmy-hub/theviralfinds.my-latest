@@ -284,16 +284,34 @@ export function OnboardingWizard() {
   // ---------- auto-open on first visit ----------
   useEffect(() => {
     if (typeof window === 'undefined') return
-    // Respect both legacy tour flag and new onboarding flag
-    const done = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OLD_TOUR_KEY)
+    // Respect legacy tour flag, new onboarding flag, and database onboardingComplete
+    const done = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OLD_TOUR_KEY) || (user && user.onboardingComplete)
     if (done) return
     const timer = setTimeout(() => setOpen(true), 800)
     return () => clearTimeout(timer)
-  }, [])
+  }, [user])
 
   // ---------- completion handler ----------
   const completeWizard = useCallback(
-    (skipped: boolean) => {
+    async (skipped: boolean) => {
+      // Save onboarding status to database if user is logged in
+      if (user?.id) {
+        try {
+          await fetch('/api/auth/me', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              onboardingComplete: true,
+              niches: selectedNiches.length ? selectedNiches : null,
+            }),
+          })
+          // Refresh auth state in the store
+          await useAppStore.getState().checkAuth()
+        } catch (err) {
+          console.error('Failed to save onboarding to database:', err)
+        }
+      }
+
       try {
         localStorage.setItem(STORAGE_KEY, 'true')
         if (selectedNiches.length) {
@@ -328,7 +346,7 @@ export function OnboardingWizard() {
         })
       }
     },
-    [selectedNiches, demoMode, connectionStatus, displayName, setShopeeConnected, setShopeeDataSource]
+    [user, selectedNiches, demoMode, connectionStatus, displayName, setShopeeConnected, setShopeeDataSource]
   )
 
   // ---------- navigation ----------
@@ -404,7 +422,7 @@ export function OnboardingWizard() {
   }, [linkGenerated, fireConfetti])
 
   // ---------- api test mock ----------
-  const handleTestConnection = useCallback(() => {
+  const handleTestConnection = useCallback(async () => {
     if (!appId.trim() || !secretKey.trim()) {
       toast.error('Missing credentials', {
         description: 'Please enter both your App ID and Secret Key.',
@@ -418,12 +436,23 @@ export function OnboardingWizard() {
       return
     }
     setConnectionStatus('testing')
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/shopee/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appId, secretKey }),
+      })
+      if (!res.ok) throw new Error('API connection failed')
       setConnectionStatus('success')
       toast.success('Connection successful!', {
         description: 'Your Shopee Affiliate API is now connected.',
       })
-    }, 1800)
+    } catch (err) {
+      setConnectionStatus('idle')
+      toast.error('Connection failed', {
+        description: 'Please check your App ID and Secret Key and try again.',
+      })
+    }
   }, [appId, secretKey])
 
   // ---------- niche toggle ----------
@@ -503,12 +532,12 @@ export function OnboardingWizard() {
           {/* ===== Header: progress + skip ===== */}
           <header className="flex items-center justify-between gap-4 px-4 sm:px-8 lg:px-12 py-4 border-b border-border bg-card/50 backdrop-blur-sm">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-shopee flex items-center justify-center flex-shrink-0">
-                <ShoppingBag className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 bg-primary/10 rounded-lg p-1">
+                <img src="/logo.svg" alt="TheViralFinds Logo" className="w-full h-full object-contain" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-foreground truncate">TheViralFindsMY</span>
+                  <span className="font-black text-sm text-foreground uppercase truncate">TheViralFinds<span className="text-primary font-normal">MY</span></span>
                   <Badge variant="secondary" className="text-[10px] bg-hermes/10 text-hermes border-hermes/20 hidden sm:inline-flex">
                     ONBOARDING
                   </Badge>

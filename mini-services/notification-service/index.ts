@@ -251,11 +251,14 @@ setInterval(() => {
 const SOCKET_PORT = 3003
 const CONTROL_PORT = 3004
 
-io.listen(SOCKET_PORT)
-console.log(`🔔 Notification service (Socket.io) running on port ${SOCKET_PORT}`)
-console.log(`   WebSocket: ws://localhost:${SOCKET_PORT}/  (frontend uses io('/?XTransformPort=3003'))`)
+const socketHttpServer = createServer();
+io.attach(socketHttpServer);
+socketHttpServer.listen(SOCKET_PORT, '127.0.0.1', () => {
+  console.log(`🔔 Notification service (Socket.io) running on port ${SOCKET_PORT}`)
+  console.log(`   WebSocket: ws://localhost:${SOCKET_PORT}/  (frontend uses io('/?XTransformPort=3003'))`)
+});
 
-controlServer.listen(CONTROL_PORT, () => {
+controlServer.listen(CONTROL_PORT, '127.0.0.1', () => {
   console.log(`🎛️  Control API running on port ${CONTROL_PORT}`)
   console.log(`   Internal emit: POST http://localhost:${CONTROL_PORT}/emit`)
   console.log(`   Health check:  GET http://localhost:${CONTROL_PORT}/health`)
@@ -267,9 +270,11 @@ controlServer.listen(CONTROL_PORT, () => {
 const shutdown = (signal: string) => {
   console.log(`\n${signal} received — shutting down notification service...`)
   io.close(() => {
-    controlServer.close(() => {
-      console.log('✅ Notification service closed')
-      process.exit(0)
+    socketHttpServer.close(() => {
+      controlServer.close(() => {
+        console.log('✅ Notification service closed')
+        process.exit(0)
+      })
     })
   })
 }

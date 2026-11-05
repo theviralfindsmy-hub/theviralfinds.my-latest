@@ -3,6 +3,7 @@ import ZAI from 'z-ai-web-dev-sdk'
 import { validateBody, contentGenerateSchema } from '@/lib/validation'
 import { enforceRateLimit, RATE_LIMITS } from '@/lib/rate-limit-enforce'
 import { handleError, ApiError } from '@/lib/api-error'
+import { MallamClient } from '@/lib/ai/mallam'
 
 const CONTENT_TYPE_PROMPTS: Record<string, string> = {
   caption: `Generate a social media caption for a Malaysian Shopee affiliate product. 
@@ -108,16 +109,15 @@ IMPORTANT RULES:
 - For comparisons: keep under 350 words
 
 Return ONLY the content, no meta-commentary or explanations.`
-
-    const completion = await zai.chat.completions.create({
-      model: 'default',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: `Create a ${type} for "${product}"${niche ? ` in the ${niche} niche` : ''} for ${platformLabel[platform as string] || 'social media'}. Language: ${language || 'manglish'}. Tone: ${tone || 'casual'}.` },
-      ],
+    const mallamClient = new MallamClient()
+    const generatedContent = await mallamClient.generate({
+      type,
+      product,
+      niche: niche || undefined,
+      platform: (platform as string) || undefined,
+      language: language || undefined,
+      tone: tone || undefined
     })
-
-    const generatedContent = completion.choices?.[0]?.message?.content || ''
 
     if (!generatedContent) {
       throw ApiError.internal('Failed to generate content. Please try again.')
